@@ -1,0 +1,49 @@
+# =========================
+# Hardware (KiCad)
+# =========================
+# Backups and autosaves
+*-backups/
+_autosave-*
+*.bak
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*.sch-bak
+
+# Temporary and cache files
+*.lck
+*.tmp
+fp-info-cache
+
+# Ignore generated manufacturing files
+*.gbr
+*.drl
+*.gbrjob
+*.pos
+
+
+# =========================
+# Firmware (PlatformIO)
+# =========================
+# PlatformIO build artifacts and library cache
+.pio/
+
+# VS Code workspace settings (PlatformIO generates these automatically)
+.vscode/
+
+
+# =========================
+# Housing (FreeCAD)
+# =========================
+# FreeCAD backup files (it creates a new one every time you save)
+*.FCStd[1-9]*
+*.FCbak
+
+# FreeCAD lock files
+.*.lock
+
+
+# =========================
+# Operating System Junk
+# =========================
+.DS_Store
+Thumbs.db
