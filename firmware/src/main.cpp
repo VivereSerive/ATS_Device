@@ -6,6 +6,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <WiFi.h>
+#include <WiFiClient.h>
 #include <HTTPClient.h>
 #include <WebSocketsClient.h> // Markus Sattler
 #include <PMS.h>
@@ -35,11 +36,11 @@
 const char* SSID = "";
 const char* SSID_KEY = "";
 
-const char* SERVER = "";
-const uint16_t SERVER_PORT = 5000;
+const char* APP_ADDR = "";
+const uint16_t APP_PORT = 5000;
 
-const char* WS_SERVER_ADDR = "";
-const char* HTTP_POST_SERVER_ADDR = "";
+const char* WS_ROUTE_ADDR = "";
+const char* HTTP_POST_ROUTE_ADDR = "";
 
 const char* API_KEY_HEADER = "";
 const char* API_KEY_VAL = "";
@@ -126,7 +127,7 @@ void DataLoggingTask(void *parameter){
 //  Communication Task Functions
 void RealTimeDataTransferTask(void *parameter){
   // Init WebSocket
-  WS.begin(SERVER, SERVER_PORT, WS_SERVER_ADDR);    // Server Address, Port, URL
+  WS.begin(APP_ADDR, APP_PORT, WS_ROUTE_ADDR);      // App Address, Port, URL
   WS.onEvent(webSocketEventHandler);                // Event Handler
   WS.setReconnectInterval(2000);                    // Retry connection every 2s
  
@@ -142,7 +143,20 @@ void RealTimeDataTransferTask(void *parameter){
 
 void OverTimeDataTransferTask(void *parameter){
   for (;;) {
+    // Init HTTP POST Request
+    WiFiClient client;
+    HTTPClient http;
+    
+    http.begin(client, HTTP_POST_ROUTE_ADDR);           // App POST Route Address
+    http.addHeader("Content-Type", "application/json"); // Specify Content Header
+    http.addHeader(API_KEY_HEADER, API_KEY_VAL);        // API Verification
 
+    String payload = compileDataJson();                 // Compile Data
+    int httpResponseCode = http.POST(payload);          // Send Request
+
+    // Free Resources
+    client.stop();
+    http.end();
   }
 }
 
