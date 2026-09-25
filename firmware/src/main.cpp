@@ -94,7 +94,10 @@ String compileDataJson();
 
 // Non-Task Functions
 void connectToWiFi(){
+  WiFi.mode(WIFI_STA);              // Init as WiFi Station
+  WiFi.begin(SSID, SSID_KEY);       // Start Connection
 
+  // TODO: Add Debugging Code Here To Notify WiFi Status
 }
 
 String compileDataJson(){
@@ -138,9 +141,8 @@ void RealTimeDataTransferTask(void *parameter){
 }
 
 void OverTimeDataTransferTask(void *parameter){
-  // HTTP POST Feature
-  for (;;) { // Create an Infinite Loop
-    // Place here the functionality of the task
+  for (;;) {
+
   }
 }
 
@@ -188,6 +190,9 @@ void GasTask(void *parameter){
 // -- Setup -- //
 void setup(){
     Serial.begin(115200);
+
+    // -- Init WiFi -- //
+    connectToWiFi();
 
     // -- Init Communication Tasks -- //
     xTaskCreatePinnedToCore(
