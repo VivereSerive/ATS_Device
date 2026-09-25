@@ -101,22 +101,39 @@ String compileDataJson(){
   
 }
 
+// TODO: Complete This
 void webSocketEventHandler(WStype_t type, uint8_t * payload, size_t length){
-  
+  switch (type){
+    case WStype_CONNECTED:
+      break;
+    case WStype_DISCONNECTED:
+      break;
+    default:
+      break;
+  }
 }
 
 // Data Processing Task Functions
 void DataLoggingTask(void *parameter){
-  for (;;) { // Create an Infinite Loop
-    // Place here the functionality of the task
+  for (;;) {
+    
   }
 }
 
 //  Communication Task Functions
 void RealTimeDataTransferTask(void *parameter){
-  // WebSocket Feature
-  for (;;) { // Create an Infinite Loop
-    // Place here the functionality of the task
+  // Init WebSocket
+  WS.begin(SERVER, SERVER_PORT, WS_SERVER_ADDR);    // Server Address, Port, URL
+  WS.onEvent(webSocketEventHandler);                // Event Handler
+  WS.setReconnectInterval(2000);                    // Retry connection every 2s
+ 
+  for (;;) {                                        // Create an Infinite Loop
+    WS.loop();                                      // Service Connection
+    
+    String payload = compileDataJson();             // Compile Data
+    WS.sendTXT(payload);                            // Send Data
+
+    vTaskDelay(pdMS_TO_TICKS(WS_PUSH_INTERVAL_MS));
   }
 }
 
